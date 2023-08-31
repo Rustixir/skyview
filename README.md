@@ -1,5 +1,5 @@
 # skyview
-build realtime server side rendering application easily
+SkyView enables rich, real-time user experiences with server-rendered HTML.
 
 
 Example: 
