@@ -1,6 +1,25 @@
 # skyview
 SkyView enables rich, real-time user experiences with server-rendered HTML.
 
+## Feature highlights
+
+SkyView brings a unified experience to building web applications. You no longer
+have to split work between client and server, across different toolings, layers, and
+abstractions. Instead, SkyView enriches the server with a declarative and powerful
+model while keeping your code closer to your data (and ultimately your source of truth):
+
+  * **Declarative rendering:** Render HTML on the server over WebSockets with a declarative model.
+
+  * **Rich templating language:** Enjoy golang builtin template engine .
+
+  * **Small payloads:** SkyView is smart enough to track changes so it only sends what the client needs, making SkyView payloads much smaller than server-rendered HTML.
+
+  * **File uploads:** Real-time file uploads with progress indicators and image previews. Process your uploads on the fly or submit them to your desired cloud service.
+
+  * **Loose coupling:** Reuse more code via stateful components with loosely-coupled templates, state, and event handling — a must for enterprise application development.
+
+  * **Live navigation:** Enriched links and redirects are just more ways SkyView keeps your app light and performant. Clients load the minimum amount of content needed as users navigate around your app without any compromise in user experience.
+
 
 Example: 
 
