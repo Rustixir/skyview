@@ -21,7 +21,7 @@ type Thermostat struct {
 func NewThermoModel() func() component.Component {
 	return func() component.Component {
 		return &Thermostat{
-			C: 1,
+			C: 0,
 		}
 	}
 }
