@@ -1,5 +1,5 @@
 
-![DarkBird](https://github.com/Rustixir/darkbird/blob/main/skyview.jpeg)
+![SkyView](https://github.com/Rustixir/darkbird/blob/main/skyview.jpeg)
 
 # skyview
 SkyView enables rich, real-time user experiences with server-rendered HTML.
