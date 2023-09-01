@@ -56,11 +56,14 @@ type Thermostat struct {
 	C int
 }
 
-func NewThermoModel() *Thermostat {
-	return &Thermostat{
-		C: 0,
+func NewThermoModel() func() component.Component {
+	return func() component.Component {
+		return &Thermostat{
+			C: 1,
+		}
 	}
 }
+
 
 func (c *Thermostat) Init() error {
 	log.Println("Initialize")
