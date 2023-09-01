@@ -25,6 +25,11 @@ model while keeping your code closer to your data (and ultimately your source of
 
 skyview is a abstrqction over github.com/jfyne/live
 
+
+# Chat Application in 5 Minutes:
+ [https://github.com/Rustixir/skyview/tree/main/example/chat]
+
+
 Example:
 
 ``` 
