@@ -29,17 +29,17 @@ func NewHub() *Hub {
 }
 
 func (h *Hub) Subscribe(username string) {
-	h.Presence[username] = time.Now().String()
+	h.Presence[username] = time.Now().Format(time.TimeOnly)
 }
 
 func (h *Hub) NewMessage(username string, message string) Message {
 	msg := Message{
 		Username: username,
 		Message:  message,
-		Date:     time.Now().String(),
+		Date:     time.Now().Format(time.TimeOnly),
 	}
 	h.History = append(h.History, msg)
-	h.Presence[username] = time.Now().String()
+	h.Presence[username] = time.Now().Format(time.TimeOnly)
 	return msg
 }
 

@@ -5,6 +5,8 @@ import (
 	"github.com/jfyne/live"
 )
 
+type Factory func() Component
+
 type Component interface {
 
 	// used for preparing model data for mounting
