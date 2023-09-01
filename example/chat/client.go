@@ -8,9 +8,6 @@ import (
 	"strconv"
 )
 
-type State struct {
-	Username string
-}
 
 type Channel struct {
 	Hub      *Hub
