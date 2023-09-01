@@ -1,118 +1,116 @@
-package Admin
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkyView</title>
+    <style>
+        html {
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+        }
+        body {
+            height: 100vh;
+            padding: 0;
+            margin: 0;
+        }
+        main {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .window {
+            height: 90vh;
+            overflow-y: scroll;
+        }
+        .message {
+            display: flex;
+            align-items: center;
+        }
+        .message span {
+            min-width: 10rem;
+            width: 10rem;
+            text-align: right;
+            font-family: monospace;
+            color: #999999;
+            margin-right: 1rem;
+            font-size: .8rem;
+        }
+        .message pre {
+            white-space: normal;
+        }
+        .actions {
+            height: 10vh;
+            display: flex;
+            align-items: center;
+            padding: 0 1rem;
+        }
+        .actions form {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .actions form input {
+            pointer-events: none;
+            background-color: black;
+            flex: 1 0 90%;
+            padding: .5rem;
+            border: 1px solid black;
+        }
+        .actions form button {
+            pointer-events: none;
+            background-color: black;
+            margin-left: 1rem;
+            padding: .5rem;
+            border: 1px solid black;
+        }
+        body.live-connected .actions form input {
+            pointer-events: initial;
+            background-color: initial;
+        }
+        body.live-connected .actions form button {
+            pointer-events: initial;
+            background-color: initial;
+        }
+    </style>
+</head>
+<body>
+<main>
+    <div style="float: left" class="window" live-update="append">
+        {{ range $msg := .Assigns.Hub.History }}
+        <div class="message">
+            <span>{{$msg.Username}}</span>
+            <pre>{{$msg.Date}} - {{$msg.Message}}</pre>
+        </div>
+        {{ end }}
+    </div>
+<!--    <div style="float: right; width: 200px">-->
+<!--        {{ range $user, $time := .Assigns.Hub.Presence }}-->
+<!--        <div class="message">-->
+<!--            <span>{{$user}} - online_at: {{$time}}</span>-->
+<!--        </div>-->
+<!--        {{ end }}-->
+<!--    </div>-->
+    <div class="actions">
+        <form id="chatinput" live-submit="new_message" live-hook="chat">
+            <input autocomplete="off" autofocus type="text" name="message">
+            <button type="submit">Send</button>
+        </form>
+    </div>
+</main>
 
-import (
-	Base "BuyCoffee/cmd"
-	"bytes"
-	"log"
-	"os"
-	"slices"
-	"strconv"
-	"sync/atomic"
-	"time"
-)
-
-type Tracker struct {
-	// number of streamers or youtubers
-	Users atomic.Int64
-	// number of payers
-	Payers atomic.Int64
-	// number of requests
-	Requests atomic.Int64
-	// number of views
-	Views atomic.Int64
-
-	interval time.Duration
-	maxFiles int
-}
-
-func NewTracker(persistent bool, interval time.Duration, maxFiles int) *Tracker {
-	tracker := &Tracker{
-		interval: interval,
-		maxFiles: maxFiles,
-	}
-
-	if persistent {
-		tracker.startReporter()
-	}
-	return tracker
-}
-
-func (t *Tracker) IncUsers() {
-	t.Users.Add(1)
-}
-func (t *Tracker) DecUsers() {
-	t.Users.Add(-1)
-}
-
-func (t *Tracker) IncPayers() {
-	t.Payers.Add(1)
-}
-func (t *Tracker) DecPayers() {
-	t.Payers.Add(-1)
-}
-
-func (t *Tracker) IncRequests() {
-	t.Requests.Add(1)
-}
-func (t *Tracker) DecRequests() {
-	t.Requests.Add(-1)
-}
-
-func (t *Tracker) IncViews() {
-	t.Views.Add(1)
-}
-func (t *Tracker) DecViews() {
-	t.Views.Add(-1)
-}
-
-func (t *Tracker) startReporter() {
-	ticker := time.Tick(t.interval)
-	go func() {
-		for range ticker {
-			t.process()
-		}
-	}()
-}
-
-func (t *Tracker) process() {
-	defer func() {
-		if r := recover(); r != nil {
-			log.Printf("Receovered Panic!! Reason: %v", r)
-		}
-	}()
-
-	path := Base.ReportPath
-	file := path + "/report-" + time.Now().Format(time.DateOnly)
-	os.WriteFile(file, t.report(), os.ModeAppend)
-
-	files, err := os.ReadDir(path)
-	if err != nil {
-		log.Println("Reporter error: " + err.Error())
-		continue
-	}
-	if len(files) >= t.maxFiles {
-		slices.SortFunc(files, func(a, b os.DirEntry) int {
-			infoA, _ := a.Info()
-			infob, _ := b.Info()
-			return infoA.ModTime().Compare(infob.ModTime())
-		})
-		os.Remove(path + "/" + files[0].Name())
-	}
-}
-
-func (t *Tracker) report() []byte {
-	var (
-		buf bytes.Buffer
-	)
-
-	users := t.Users.Swap(0)
-	payers := t.Payers.Swap(0)
-	requests := t.Requests.Swap(0)
-	views := t.Views.Swap(0)
-
-	buf.WriteString("Users: " + strconv.FormatInt(users, 10))
-	buf.WriteString("Payers: " + strconv.FormatInt(payers, 10))
-	buf.WriteString("Requests: " + strconv.FormatInt(requests, 10))
-	buf.WriteString("Views: " + strconv.FormatInt(views, 10))
-	return buf.Bytes()
-}
+<script>
+    window.Hooks = {
+        "chat": {
+            mounted: function() {
+                this.el.addEventListener("submit", () => {
+                    this.el.querySelector("input").value = "";
+                });
+            }
+        }
+    };
+</script>
+<script type="text/javascript" src="/live.js"></script>
+</body>
+</html>
