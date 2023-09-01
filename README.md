@@ -1,5 +1,5 @@
 
-![SkyView]([https://github.com/Rustixir/skyview/blob/main/skyview.jpg])
+![SkyView](https://github.com/Rustixir/skyview/blob/main/skyview.jpg)
 
 # skyview
 SkyView enables rich, real-time user experiences with server-rendered HTML.
