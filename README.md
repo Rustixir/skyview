@@ -51,7 +51,7 @@ type Thermostat struct {
 
 func NewThermoModel() *Thermostat {
 	return &Thermostat{
-		C: 1,
+		C: 0,
 	}
 }
 
