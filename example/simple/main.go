@@ -44,7 +44,7 @@ func (c *Thermostat) HandleEvent(evtName string, p live.Params) skyview.Response
 	return skyview.Ok()
 }
 
-func (c Thermostat) HandleBroadcast(data interface{}) error {
+func (c *Thermostat) HandleBroadcast(data interface{}) error {
 	return nil
 }
 

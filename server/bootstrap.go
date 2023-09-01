@@ -17,6 +17,7 @@ func AddHandler(path string, handler http.Handler) {
 func Start(port string) {
 	log.Println("Listening on: " + port)
 	router.Handle("/live.js", live.Javascript{})
+	router.Handle("/auto.js.map", live.JavascriptMap{})
 	http.Handle("/", router)
 	http.ListenAndServe(port, nil)
 }
