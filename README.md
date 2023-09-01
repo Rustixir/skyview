@@ -27,7 +27,7 @@ skyview is a abstrqction over github.com/jfyne/live
 
 
 # Chat Application in 5 Minutes:
-can write chat application in 5minutes without js code 
+ Write chat application in 5 minutes without js code 
  [https://github.com/Rustixir/skyview/tree/main/example/chat]
 
 
