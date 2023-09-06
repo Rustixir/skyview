@@ -7,7 +7,7 @@ import (
 
 func main() {
 	hub := chat.NewHub()
-	builder := component.NewBuilder("secret", "skyview")
-	builder.AddComponent("channel", chat.NewChannel(hub), []string{"new_message"})
+	builder := component.NewBuilder("secret", "skyview", 0)
+	builder.AddComponent("channel", false, chat.NewChannel(hub), []string{"new_message"})
 	builder.Start(":7070")
 }

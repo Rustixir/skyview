@@ -9,8 +9,9 @@ import (
 )
 
 func main() {
-	builder := component.NewBuilder("secret-weak", "skyview")
-	builder.AddComponent("Thermostat", NewThermoModel(), []string{"temp-up", "temp-down"})
+
+	builder := component.NewBuilder("secret-weak", "skyview", 0)
+	builder.AddComponent("Thermostat", false, NewThermoModel(), []string{"temp-up", "temp-down"})
 	builder.Start(":7072")
 }
 
@@ -18,9 +19,11 @@ type Thermostat struct {
 	C int
 }
 
-func NewThermoModel() *Thermostat {
-	return &Thermostat{
-		C: 1,
+func NewThermoModel() func() component.Component {
+	return func() component.Component {
+		return &Thermostat{
+			C: 1,
+		}
 	}
 }
 

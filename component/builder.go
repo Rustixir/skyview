@@ -3,6 +3,8 @@ package component
 import (
 	"bytes"
 	"context"
+	"github.com/Rustixir/skyview"
+	"github.com/Rustixir/skyview/notify"
 	"github.com/Rustixir/skyview/render"
 	"github.com/Rustixir/skyview/server"
 	"github.com/jfyne/live"
@@ -13,20 +15,26 @@ import (
 type Builder struct {
 	secret      string
 	sessionName string
+	notify      *notify.Local
 }
 
-func NewBuilder(secret string, sessionName string) Builder {
+func NewBuilder(secret string, sessionName string, notifyBuff int) Builder {
 	return Builder{
 		secret,
 		sessionName,
+		notify.NewLocal(notifyBuff),
 	}
 }
 
 // name used for url: baseurl/{lowercase name}
-func (b *Builder) AddComponent(name string, factroy func() Component, listenOnEvents []string) {
+// bidi when be true create a listener to listen on server event channel
+func (b *Builder) AddComponent(name string, bidi bool, factory func() Component, listenOnEvents []string) {
 	h := live.NewHandler()
 	h.HandleMount(func(ctx context.Context, s live.Socket) (interface{}, error) {
-		c := factroy()
+		c := factory()
+		if bidi {
+			b.notify.StartListener(ctx, s)
+		}
 		return c, c.Init()
 	})
 	h.HandleUnmount(func(s live.Socket) error {
@@ -48,18 +56,33 @@ func (b *Builder) AddComponent(name string, factroy func() Component, listenOnEv
 		err = render.RenderFile(name, rc, &buf)
 		return &buf, err
 	})
-	h.HandleSelf("broadcast", func(ctx context.Context, s live.Socket, data interface{}) (interface{}, error) {
+	h.HandleSelf(skyview.BroadcastEvent, func(ctx context.Context, s live.Socket, data interface{}) (interface{}, error) {
 		comp := s.Assigns().(Component)
 		err := comp.HandleBroadcast(data)
 		return comp, err
 	})
-
+	h.HandleSelf(skyview.NotifyEvent, func(ctx context.Context, s live.Socket, data interface{}) (interface{}, error) {
+		var err error
+		comp := s.Assigns().(Component)
+		if params, ok := data.(live.Params); ok {
+			resp := comp.HandleEvent(skyview.NotifyEvent, params)
+			if resp.BroadcastData != nil {
+				s.Broadcast(skyview.BroadcastEvent, resp.BroadcastData)
+			}
+			err = resp.Err
+		}
+		return comp, err
+	})
 	for _, evt := range listenOnEvents {
 		h.HandleEvent(evt, apply(evt))
 	}
 
 	handler := live.NewHttpHandler(live.NewCookieStore(b.sessionName, []byte(b.secret)), h)
 	server.AddHandler("/"+strings.ToLower(name), handler)
+}
+
+func (b *Builder) GetNotify() *notify.Local {
+	return b.notify
 }
 
 func (b *Builder) Start(port string) {
@@ -71,9 +94,8 @@ func apply(evt string) live.EventHandler {
 		comp := s.Assigns().(Component)
 		resp := comp.HandleEvent(evt, p)
 		if resp.BroadcastData != nil {
-			s.Broadcast("broadcast", resp.BroadcastData)
+			s.Broadcast(skyview.BroadcastEvent, resp.BroadcastData)
 		}
-
 		return comp, resp.Err
 	}
 }
