@@ -1,0 +1,39 @@
+{{ define "view" }}
+
+<main>
+    <div style="float: left" class="window" live-update="append">
+        {{ range $msg := .Assigns.Hub.History }}
+        <div class="message">
+            <span>{{$msg.Username}}</span>
+            <pre>{{$msg.Date}} - {{$msg.Message}}</pre>
+        </div>
+        {{ end }}
+    </div>
+    <div style="float: right; width: 200px">
+        {{ range $user, $time := .Assigns.Hub.Presence }}
+        <div class="message">
+            <span>{{$user}} - online_at: {{$time}}</span>
+        </div>
+        {{ end }}
+    </div>
+    <div class="actions">
+        <form id="chatinput" live-submit="send" live-hook="chat">
+            <input autocomplete="off" autofocus type="text" name="message">
+            <button type="submit">Send</button>
+        </form>
+    </div>
+</main>
+
+<script>
+    window.Hooks = {
+        "chat": {
+            mounted: function() {
+                this.el.addEventListener("submit", () => {
+                    this.el.querySelector("input").value = "";
+                });
+            }
+        }
+    };
+</script>
+
+{{ end }}
