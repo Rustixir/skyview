@@ -16,7 +16,7 @@ model while keeping your code closer to your data (and ultimately your source of
 
 * **Small payloads:** SkyView is smart enough to track changes so it only sends what the client needs, making SkyView payloads much smaller than server-rendered HTML.
 
-* **File uploads:** Real-time file uploads with progress indicators and image previews. Process your uploads on the fly or submit them to your desired cloud service.
+* **Bidirectional:**  SkyView can broadcast every event you want send over socket to rendered on browser.
 
 * **Loose coupling:** Reuse more code via stateful components with loosely-coupled templates, state, and event handling — a must for enterprise application development.
 
@@ -40,8 +40,8 @@ import (
 )
 
 func main() {
-	builder := component.NewBuilder("secret-weak", "skyview")
-	builder.AddComponent("Thermostat", NewThermoModel(), []string{"temp-up", "temp-down"})
+	builder := component.NewBuilder("secret-weak", "skyview", 0)
+	builder.AddComponent("Thermostat", false, NewThermoModel(), []string{"temp-up", "temp-down"})
 	builder.Start(":7072")
 }
 
