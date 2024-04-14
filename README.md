@@ -50,9 +50,7 @@ type Thermostat struct {
 }
 
 func NewThermoModel() *Thermostat {
-	return &Thermostat{
-		C: 0,
-	}
+	return new(Thermostat)
 }
 
 func (c *Thermostat) Init() error {
