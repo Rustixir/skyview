@@ -51,13 +51,12 @@ type Thermostat struct {
 
 func NewThermoModel() *Thermostat {
 	return &Thermostat{
-		C: 1,
+		C: 0,
 	}
 }
 
 func (c *Thermostat) Init() error {
 	log.Println("Initialize")
-	c.C = 1
 	return nil
 }
 
