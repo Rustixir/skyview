@@ -23,7 +23,7 @@ model while keeping your code closer to your data (and ultimately your source of
 * **Live navigation:** Enriched links and redirects are just more ways SkyView keeps your app light and performant. Clients load the minimum amount of content needed as users navigate around your app without any compromise in user experience.
 
 
-skyview is a abstrqction over github.com/jfyne/live
+skyview is a abstraction over github.com/jfyne/live
 
 Example:
 
